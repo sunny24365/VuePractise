@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Datepicker - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    Date: <date-picker @update-date="updateDate" date-format="mm-dd-yy" v-once></date-picker>
+    <p>{{date}}</p>
+  </div>
+  <div id="tableContainer">
+    <data-tables>
+      <table>
+      <thead>
+        <th>Desserts</th>
+        <th>Type</th>
+        <th>Price</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Rasmalai</td>
+          <td>Ghee</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>Cake</td>
+          <td>Bake</td>
+          <td>11</td>
+        </tr>
+        <tr>
+          <td>Kova</td>
+          <td>Jaggery</td>
+          <td>13</td>
+        </tr>
+      </tbody>
+    </table>
+    </data-tables>
+	<script language="javascript" type="text/javascript">
+		Vue.component('date-picker', {
+		  template: '<input/>',
+		  props: [ 'dateFormat' ],
+		  mounted: function() {
+			var self = this;
+			$(this.$el).datepicker({
+			  dateFormat: this.dateFormat,
+			  onSelect: function(date) {
+				self.$emit('update-date', date);
+			  }
+			});
+		  },
+		  beforeDestroy: function() {
+			$(this.$el).datepicker('hide').datepicker('destroy');
+		  }
+		});
+
+		Vue.component('data-tables', {
+		  mounted: function() {
+			var self = this;
+			alert(this.$el);
+			$(this.$el).find("table").DataTable({
+			  "bPaginate": true
+			});
+		  },
+		  beforeDestroy: function() {
+			$(this.$el).find("table").DataTable().clear();
+			$(this.$el).find("table").DataTable().destroy();
+		  }
+		});
+
+		var vm = new Vue({
+		  el: '#tableContainer',
+		  data: {
+			date: null
+		  }
+		});
+
+		var vm = new Vue({
+		  el: '#app',
+		  data: {
+			date: null
+		  },
+		  methods: {
+			updateDate: function(date){
+			  this.date = date;
+			}
+		  }
+		});
+	</script>
+  </div>
+</body>
+</html>
